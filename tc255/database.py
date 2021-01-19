@@ -64,8 +64,10 @@ def insert_to_db(df: pd.DataFrame) -> None:
             INSERT INTO 
             Info(title, price, item_url, image_url, category)
             VALUES
-            ('{row[1]}', '{row[2]}', '{row[3]}', '{row[4]}', '{row[0]}');
-        """)
+            (%s, %s, %s, %s, %s);
+        """,
+                    (row[1], row[2], row[3], row[4], row[0])
+                    )
         connection.commit()
 
 
@@ -98,7 +100,7 @@ def export_csv(path: str) -> None:
         row = cur.fetchone()
 
     # Create a csv file
-    with open(path, "w") as outfile:
+    with open(path, "w", encoding="utf-8") as outfile:
         writer = csv.writer(outfile)
         writer.writerow(data.keys())
         writer.writerows(zip(*data.values()))
